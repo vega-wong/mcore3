@@ -19,51 +19,57 @@
     </section>
 
     <section class="main-content">
-      <pre lang="_**********_`______________`_**********_````"><code>## mcore
+      <h2>
+<a id="mcore" class="anchor" href="#mcore" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>mcore</h2>
 
-- MVC 框架 [Based on MVC Architecture]
-- 模板渲染基于 virtual-dom diff 实现， 只更新需要变更的 DOM [Template rendering is based on Virtual-Dom diff. Only update the DOM that needs to be updated]
-- 模板不需要像 react 那样用 JSX； 跟原来一样， 写 html 就行了 [Unlike ReactJS, templates don't need JSX. We can just write html as usual]
-- 模板中的 DIY tag 就是一个 Components， 实现组件化非常方便 [The DIY tag in template is a Components, so it's easy to achieve modular]
-- 每一个 DIY tag 是一个 “独立空间”， 子节点不参于 diff. 所以，你可以很方便的， 在 DIY tag 里，使用 jQuery 的插件 [Each DIY tag is like a independent space, child node doesn't involve in diff. So, you can easily use jQuery plugin in the DIY tag]
+<ul>
+<li>MVC 框架 [Based on MVC Architecture]</li>
+<li>模板渲染基于 virtual-dom diff 实现， 只更新需要变更的 DOM [Template rendering is based on Virtual-Dom diff. Only update the DOM that needs to be updated]</li>
+<li>模板不需要像 react 那样用 JSX； 跟原来一样， 写 html 就行了 [Unlike ReactJS, templates don't need JSX. We can just write html as usual]</li>
+<li>模板中的 DIY tag 就是一个 Components， 实现组件化非常方便 [The DIY tag in template is a Components, so it's easy to achieve modular]</li>
+<li>每一个 DIY tag 是一个 “独立空间”， 子节点不参于 diff. 所以，你可以很方便的， 在 DIY tag 里，使用 jQuery 的插件 [Each DIY tag is like a independent space, child node doesn't involve in diff. So, you can easily use jQuery plugin in the DIY tag]</li>
+</ul>
 
-## Getting started
+<h2>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting started</h2>
 
-### Install mcore-cli
+<h3>
+<a id="install-mcore-cli" class="anchor" href="#install-mcore-cli" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install mcore-cli</h3>
 
-</code></pre>
-
-<p>npm i -g yarn
+<pre><code>npm i -g yarn
 yarn global add mcore-cli
 mkdir mcore-app
 cd mcore-app
 mcore-cli --init ./
 yarn
-npm run dev</p>
-
-<pre><code>
-## MOVING PARTS
-
-- [Binders](#binders)
-- [Formatters](#formatters)
-- [Components](#components)
-- [View](#view)
-- [Route](#route)
-- [App](#app)
-- [Middleware](#middleware)
-
-## Binders
-
-Describe how your underlying data is reflected in the DOM and vice-versa. All binders create a binding that is automatically updated when model data changes or when the user interacts with the DOM.
-
-### html
-
-Sets the element's HTML content.
-
-```html
-&lt;section mc-html="scope.item.summary"&gt;&lt;/section&gt;
-
+npm run dev
 </code></pre>
+
+<h2>
+<a id="moving-parts" class="anchor" href="#moving-parts" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>MOVING PARTS</h2>
+
+<ul>
+<li><a href="#binders">Binders</a></li>
+<li><a href="#formatters">Formatters</a></li>
+<li><a href="#components">Components</a></li>
+<li><a href="#view">View</a></li>
+<li><a href="#route">Route</a></li>
+<li><a href="#app">App</a></li>
+<li><a href="#middleware">Middleware</a></li>
+</ul>
+
+<h2>
+<a id="binders" class="anchor" href="#binders" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Binders</h2>
+
+<p>Describe how your underlying data is reflected in the DOM and vice-versa. All binders create a binding that is automatically updated when model data changes or when the user interacts with the DOM.</p>
+
+<h3>
+<a id="html" class="anchor" href="#html" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>html</h3>
+
+<p>Sets the element's HTML content.</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">section</span> <span class="pl-e">mc-html</span>=<span class="pl-s"><span class="pl-pds">"</span>scope.item.summary<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">section</span>&gt;
+</pre></div>
 
 <h3>
 <a id="show" class="anchor" href="#show" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>show</h3>
