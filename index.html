@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Mcore3 by vega-wong</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Mcore3</h1>
+      <h2 class="project-tagline">基于 virtual-dom diff 实现的MVC 框架 （ IE8 支持 ）</h2>
+      <a href="https://github.com/vega-wong/mcore3" class="btn">View on GitHub</a>
+      <a href="https://github.com/vega-wong/mcore3/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/vega-wong/mcore3/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <pre lang="_**********_`______________`_**********_````"><code>## mcore
+
+- MVC 框架 [Based on MVC Architecture]
+- 模板渲染基于 virtual-dom diff 实现， 只更新需要变更的 DOM [Template rendering is based on Virtual-Dom diff. Only update the DOM that needs to be updated]
+- 模板不需要像 react 那样用 JSX； 跟原来一样， 写 html 就行了 [Unlike ReactJS, templates don't need JSX. We can just write html as usual]
+- 模板中的 DIY tag 就是一个 Components， 实现组件化非常方便 [The DIY tag in template is a Components, so it's easy to achieve modular]
+- 每一个 DIY tag 是一个 “独立空间”， 子节点不参于 diff. 所以，你可以很方便的， 在 DIY tag 里，使用 jQuery 的插件 [Each DIY tag is like a independent space, child node doesn't involve in diff. So, you can easily use jQuery plugin in the DIY tag]
+
+## Getting started
+
+### Install mcore-cli
+
+</code></pre>
+
+<p>npm i -g yarn
+yarn global add mcore-cli
+mkdir mcore-app
+cd mcore-app
+mcore-cli --init ./
+yarn
+npm run dev</p>
+
+<pre><code>
+## MOVING PARTS
+
+- [Binders](#binders)
+- [Formatters](#formatters)
+- [Components](#components)
+- [View](#view)
+- [Route](#route)
+- [App](#app)
+- [Middleware](#middleware)
+
+## Binders
+
+Describe how your underlying data is reflected in the DOM and vice-versa. All binders create a binding that is automatically updated when model data changes or when the user interacts with the DOM.
+
+### html
+
+Sets the element's HTML content.
+
+```html
+&lt;section mc-html="scope.item.summary"&gt;&lt;/section&gt;
+
+</code></pre>
+
+<h3>
+<a id="show" class="anchor" href="#show" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>show</h3>
+
+<p>Shows the element when the value evaluates to true and hides the element when the value evaluates to false.</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">button</span> <span class="pl-e">mc-show</span>=<span class="pl-s"><span class="pl-pds">"</span>scope.user.admin<span class="pl-pds">"</span></span>&gt;Remove&lt;/<span class="pl-ent">button</span>&gt;
+&lt;<span class="pl-ent">button</span> <span class="pl-e">mc-show</span>=<span class="pl-s"><span class="pl-pds">"</span>scope.user.ix &gt; 0<span class="pl-pds">"</span></span>&gt;Remove&lt;/<span class="pl-ent">button</span>&gt;</pre></div>
+
+<h3>
+<a id="hide" class="anchor" href="#hide" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>hide</h3>
+
+<p>Hides the element when the value evaluates to true and shows the element when the value evaluates to false.</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">section</span> <span class="pl-e">mc-hide</span>=<span class="pl-s"><span class="pl-pds">"</span>scope.feature.disabled<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">section</span>&gt;</pre></div>
+
+<h3>
+<a id="if" class="anchor" href="#if" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>if</h3>
+
+<p>Inserts and binds the element as well as it's child nodes into the DOM when the value evaluates to true and removes the element when the value evaluates to false.</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">section</span> <span class="pl-e">mc-if</span>=<span class="pl-s"><span class="pl-pds">"</span>scope.item.editable<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">section</span>&gt;
+&lt;<span class="pl-ent">section</span> <span class="pl-e">mc-if</span>=<span class="pl-s"><span class="pl-pds">"</span>scope.item.editable || scope.item.ix &gt; 0<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">section</span>&gt;
+&lt;<span class="pl-ent">section</span> <span class="pl-e">mc-if</span>=<span class="pl-s"><span class="pl-pds">"</span>scope.item.editable <span class="pl-ii">&amp;&amp;</span> scope.item.ix != 0<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">section</span>&gt;
+&lt;<span class="pl-ent">section</span> <span class="pl-e">mc-if</span>=<span class="pl-s"><span class="pl-pds">"</span>(scope.item.editable <span class="pl-ii">&amp;&amp;</span> scope.item.ix != 0) || scope.show<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">section</span>&gt;</pre></div>
+
+<h3>
+<a id="for" class="anchor" href="#for" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>for</h3>
+
+<p>Each Array or Object</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">ul</span>&gt;
+    &lt;<span class="pl-ent">li</span> <span class="pl-e">mc-for</span>=<span class="pl-s"><span class="pl-pds">"</span>v in scope.arrayData<span class="pl-pds">"</span></span>&gt;
+        {v}
+    &lt;/<span class="pl-ent">li</span>&gt;
+    &lt;<span class="pl-ent">li</span> <span class="pl-e">mc-for</span>=<span class="pl-s"><span class="pl-pds">"</span>v, i in scope.arrayData<span class="pl-pds">"</span></span>&gt;
+        {v} index: {i}
+    &lt;/<span class="pl-ent">li</span>&gt;
+
+    &lt;<span class="pl-ent">li</span> <span class="pl-e">mc-for</span>=<span class="pl-s"><span class="pl-pds">"</span>v of scope.objectData<span class="pl-pds">"</span></span>&gt;
+        {v}
+    &lt;/<span class="pl-ent">li</span>&gt;
+
+    &lt;<span class="pl-ent">li</span> <span class="pl-e">mc-for</span>=<span class="pl-s"><span class="pl-pds">"</span>v, key of scope.objectData<span class="pl-pds">"</span></span>&gt;
+        {v} key: {key}
+    &lt;/<span class="pl-ent">li</span>&gt;
+
+    &lt;<span class="pl-ent">li</span> <span class="pl-e">mc-for</span>=<span class="pl-s"><span class="pl-pds">"</span>v in (scope.arrayData || scope.otherData)<span class="pl-pds">"</span></span>&gt;
+        {v}
+    &lt;/<span class="pl-ent">li</span>&gt;
+&lt;/<span class="pl-ent">ul</span>&gt;</pre></div>
+
+<h3>
+<a id="on-event" class="anchor" href="#on-event" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>on-[event]</h3>
+
+<p>Binds an event listener on the element using the event specified in [event]</p>
+
+<blockquote>
+<p>注： callback 至小有二个参数， 参数1: event 参数2: element (跟 jQuery 的事件回调参数一样)</p>
+</blockquote>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">button</span> <span class="pl-e">mc-on-click</span>=<span class="pl-s"><span class="pl-pds">"</span>edit<span class="pl-pds">"</span></span>&gt;Remove&lt;/<span class="pl-ent">button</span>&gt;</pre></div>
+
+<p>在事件中，传递上下文</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">div</span> <span class="pl-e">mc-for</span>=<span class="pl-s"><span class="pl-pds">"</span>v, i in scope.list<span class="pl-pds">"</span></span>&gt;
+    &lt;<span class="pl-ent">span</span> <span class="pl-e">mc-on-click</span>=<span class="pl-s"><span class="pl-pds">"</span>show(v, i)<span class="pl-pds">"</span></span>&gt;{v.title}&lt;/<span class="pl-ent">span</span>&gt;
+&lt;/<span class="pl-ent">div</span>&gt;</pre></div>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">class</span> <span class="pl-en">Edit</span> <span class="pl-k">extends</span> <span class="pl-e">mcore</span>.<span class="pl-smi">Veiw</span> {
+    <span class="pl-en">show</span>(<span class="pl-c1">event</span>, <span class="pl-smi">el</span>, <span class="pl-smi">v</span>, <span class="pl-smi">i</span>){
+        <span class="pl-en">console</span>.<span class="pl-c1">log</span>(v, i);
+    }
+}</pre></div>
+
+<h3>
+<a id="class-classname" class="anchor" href="#class-classname" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>class-[classname]</h3>
+
+<blockquote>
+<p>version added: 3.0</p>
+</blockquote>
+
+<p>Adds a class (whatever value is in place of [classname]) on the element when the value evaluates to true and removes that class if the value evaluates to false.</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">li</span> <span class="pl-e">mc-class-completed</span>=<span class="pl-s"><span class="pl-pds">"</span>scope.todo.done<span class="pl-pds">"</span></span>&gt;{ scope.todo.name }&lt;/<span class="pl-ent">li</span>&gt;</pre></div>
+
+<h3>
+<a id="attribute" class="anchor" href="#attribute" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>[attribute]</h3>
+
+<p>Sets the value of an attribute (whatever value is in place of [attribute]) on the element.</p>
+
+<p>If your binding declaration does not match any of the above routines, it will fallback to use this binding.</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">input</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span> <span class="pl-e">mc-placeholder</span>=<span class="pl-s"><span class="pl-pds">"</span>scope.field.placeholder<span class="pl-pds">"</span></span>&gt;</pre></div>
+
+<h2>
+<a id="formatters" class="anchor" href="#formatters" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Formatters</h2>
+
+<p>Formatters are functions that mutate the incoming and/or outgoing value of a binding. You can use them to format dates, numbers, currencies, etc. and because they work in a similar fashion to the Unix pipeline, the output of each feeds directly as input to the next one, so you can stack as many of them together as you like.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">mcore</span>.<span class="pl-smi">Template</span>.<span class="pl-smi">formatters</span>.<span class="pl-en">date</span> <span class="pl-k">=</span> (<span class="pl-smi">value</span>)<span class="pl-k">=&gt;</span>{
+    <span class="pl-k">return</span> <span class="pl-en">moment</span>(value).<span class="pl-en">format</span>(<span class="pl-s"><span class="pl-pds">'</span>YYYY-MM-DD<span class="pl-pds">'</span></span>);
+};</pre></div>
+
+<p>Formatters are applied by piping them to binding declarations using | as a delimiter.</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">input</span> <span class="pl-e">mc-value</span>=<span class="pl-s"><span class="pl-pds">"</span>scope.startDate | date<span class="pl-pds">"</span></span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span> /&gt;
+
+&lt;<span class="pl-ent">span</span>&gt;{scope.startDate | date}&lt;/<span class="pl-ent">span</span>&gt;</pre></div>
+
+<h3>
+<a id="formatter-arguments" class="anchor" href="#formatter-arguments" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Formatter arguments</h3>
+
+<p>Formatters can accept any number of arguments in the form of keypaths or primitives. Keypath arguments get observed and will recompute the binding when any intermediary key changes. A primitive can be a string, number, boolean, null or undefined.</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">span</span>&gt;{ scope.alarm.time | time scope.user.timezone 'hh:mm' }&lt;/<span class="pl-ent">span</span>&gt;</pre></div>
+
+<p>The value of each argument in the binding declaration will be evaluated and passed into the formatter function as an additional argument.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">mcore</span>.<span class="pl-smi">Template</span>.<span class="pl-smi">formatters</span>.<span class="pl-en">time</span> <span class="pl-k">=</span> (<span class="pl-smi">value</span>, <span class="pl-smi">timezone</span>, <span class="pl-smi">format</span>)<span class="pl-k">=&gt;</span>{
+    <span class="pl-k">return</span> <span class="pl-en">moment</span>(value).<span class="pl-en">tz</span>(timezone).<span class="pl-en">format</span>(format);
+};</pre></div>
+
+<h2>
+<a id="components" class="anchor" href="#components" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Components</h2>
+
+<p>Components let you define reusable views that can be used within any of your templates. For some perspective on where components fit into your templates in relation to binders; binders define custom attributes, while components define custom elements.</p>
+
+<div class="highlight highlight-text-html-basic"><pre><span class="pl-c">&lt;!-- time.html --&gt;</span>
+&lt;<span class="pl-ent">span</span>&gt;{scope.time}&lt;/<span class="pl-ent">span</span>&gt;</pre></div>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">export</span> <span class="pl-v">default</span> <span class="pl-k">class</span> <span class="pl-en">Time</span> <span class="pl-k">extends</span> <span class="pl-e">mcore</span>.<span class="pl-smi">Component</span> {
+    <span class="pl-en">init</span>(){
+        <span class="pl-v">this</span>.<span class="pl-en">render</span>(<span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>time.html<span class="pl-pds">'</span></span>),{
+            time<span class="pl-k">:</span> <span class="pl-k">new</span> <span class="pl-en">Date</span>()
+        });
+
+        <span class="pl-c1">setInterval</span>(()<span class="pl-k">=&gt;</span>{
+            <span class="pl-v">this</span>.<span class="pl-c1">scope</span>.<span class="pl-smi">time</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Date</span>();
+        }, <span class="pl-c1">1000</span>);
+    }
+}
+<span class="pl-smi">mcore</span>.<span class="pl-smi">Template</span>.<span class="pl-c1">components</span>.<span class="pl-smi">time</span> <span class="pl-k">=</span> Time;</pre></div>
+
+<p>Use Components</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">time</span>&gt;&lt;/<span class="pl-ent">time</span>&gt;</pre></div>
+
+<h2>
+<a id="view" class="anchor" href="#view" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>View</h2>
+
+<blockquote>
+<p>extends Components</p>
+</blockquote>
+
+<div class="highlight highlight-text-html-basic"><pre><span class="pl-c">&lt;!-- home.html --&gt;</span>
+&lt;<span class="pl-ent">h1</span>&gt; Hello {scope.name} !&lt;/<span class="pl-ent">h1</span>&gt;</pre></div>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">export</span> <span class="pl-v">default</span> <span class="pl-k">class</span> <span class="pl-en">Home</span> <span class="pl-k">extends</span> <span class="pl-e">mcore</span>.<span class="pl-smi">View</span> {
+    <span class="pl-en">run</span>(){
+        <span class="pl-v">this</span>.<span class="pl-en">render</span>(<span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>home.html<span class="pl-pds">'</span></span>), {
+            name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>freddy<span class="pl-pds">'</span></span>
+        });
+    }
+}</pre></div>
+
+<h2>
+<a id="route" class="anchor" href="#route" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Route</h2>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/vega-wong/mcore3">Mcore3</a> is maintained by <a href="https://github.com/vega-wong">vega-wong</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
